@@ -102,8 +102,8 @@ class Efficient:
         tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 
         checkpoint = ModelCheckpoint(filepath, monitor='accuracy', verbose=1, save_best_only=True, mode='max')
-        self.callbacks_list = [checkpoint,LearningRateScheduler(schedule),tensorboard]
-        
+        self.callbacks_list = [checkpoint,tensorboard]
+        #self.callbacks_list = [checkpoint,LearningRateScheduler(schedule),tensorboard]
 
     def train_model(self):
         self.efficient_model()
