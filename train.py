@@ -19,7 +19,7 @@ import argparse
 
 class Efficient:
 
-    def __init__(self,train_dir,test_dir,batch_size,epochs=100,effN='3'):
+    def __init__(self,train_dir,test_dir,batch_size,epochs=100,effN='3',lr):
         self.batch_size = batch_size
         self.epochs = epochs    
         self.train_datagen = ImageDataGenerator(
@@ -28,6 +28,7 @@ class Efficient:
             zoom_range=0.2,
             horizontal_flip=True)
         self.effN=effN
+        self.lr = lr
         self.test_datagen = ImageDataGenerator(rescale=1./255)
 
         self.train_generator = self.train_datagen.flow_from_directory(
@@ -92,7 +93,7 @@ class Efficient:
         self.model.add(Dense(units = 23, activation='sigmoid'))
         self.model.summary()	
 
-        optimizer=Adam(lr=0.01)
+        optimizer=Adam(lr=self.lr)
         lr_metric = get_lr_metric(optimizer)
 
         self.model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy',lr_metric])
@@ -130,7 +131,7 @@ args = parser.parse_args()
 # test_dir = '../dataset2/test'
 # print(args.train_dir)
 # exit()
-Network = Efficient(args.train_dir,args.test_dir,args.batch_size, args.epochs, args.model)
+Network = Efficient(args.train_dir,args.test_dir,args.batch_size, args.epochs, args.model,args.lr)
 Network.train_model()
 
 #python.exe .\train.py ../dataset2/train/ ../dataset2/test 32 100 3
