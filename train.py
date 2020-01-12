@@ -102,7 +102,7 @@ class Efficient:
         schedule = PolynomialDecay(maxEpochs=self.epochs, initAlpha=1e-1, power=5)
         tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 
-        checkpoint = ModelCheckpoint(filepath, monitor='accuracy', verbose=1, save_best_only=True, mode='max')
+        checkpoint = ModelCheckpoint(self.filepath, monitor='accuracy', verbose=1, save_best_only=True, mode='max')
         self.callbacks_list = [checkpoint,tensorboard]
 #        self.callbacks_list = [checkpoint,LearningRateScheduler(schedule),tensorboard]
 
