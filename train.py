@@ -103,7 +103,7 @@ class Efficient:
 
         checkpoint = ModelCheckpoint(filepath, monitor='accuracy', verbose=1, save_best_only=True, mode='max')
         self.callbacks_list = [checkpoint,tensorboard]
-        #self.callbacks_list = [checkpoint,LearningRateScheduler(schedule),tensorboard]
+#        self.callbacks_list = [checkpoint,LearningRateScheduler(schedule),tensorboard]
 
     def train_model(self):
         self.efficient_model()
@@ -124,6 +124,7 @@ parser.add_argument('-test_dir', type=str, help='Train_dir', default = '../datas
 parser.add_argument('-batch_size', type=int, help='batch_size', default = 32)
 parser.add_argument('-epochs', type=int, help='epoch', default = 100)
 parser.add_argument('-model', type=str, help='Model Number', default = '3')
+parser.add_argument('-lr', type=str, help='learning rate', default = '0.01')
 args = parser.parse_args()
 # train_dir = '../dataset2/train/'
 # test_dir = '../dataset2/test'
