@@ -93,8 +93,8 @@ class Efficient:
         self.model.add(Dense(units = 23, activation='sigmoid'))
         self.model.summary()	
 
-        optimizer=Adam(lr=self.lr)
-        lr_metric = get_lr_metric(optimizer)
+        self.optimizer=Adam(lr=self.lr)
+        lr_metric = get_lr_metric(self.optimizer)
 
         
         self.filepath="checkpoints/weights.hdf5"
@@ -108,7 +108,7 @@ class Efficient:
 
     def train_model(self):
         self.efficient_model()
-        self.model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy',lr_metric])
+        self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy',lr_metric])
         history = self.model.fit_generator(
             self.train_generator,
             epochs = 100,
@@ -121,7 +121,7 @@ class Efficient:
     def resume_training(self):
         self.efficient_model()
         self.model.load_weights(self.filepath)
-        self.model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy',lr_metric])
+        self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy',lr_metric])
         history = self.model.fit_generator(
             self.train_generator,
             epochs = 100,
