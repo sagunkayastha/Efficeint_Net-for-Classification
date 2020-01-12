@@ -138,7 +138,7 @@ parser.add_argument('--test_dir', type=str, help='Train_dir', default = '../data
 parser.add_argument('--batch_size', type=int, help='batch_size', default = 32)
 parser.add_argument('--epochs', type=int, help='epoch', default = 100)
 parser.add_argument('--model', type=str, help='Model Number', default = '3')
-parser.add_argument('--lr', type=str, help='learning rate', default = '0.01')
+parser.add_argument('--lr', type=float, help='learning rate', default = '0.01')
 args = parser.parse_args()
 # train_dir = '../dataset2/train/'
 # test_dir = '../dataset2/test'
