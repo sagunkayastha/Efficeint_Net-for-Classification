@@ -132,7 +132,7 @@ class Efficient:
     )
 
 parser = argparse.ArgumentParser(description='Efficient')
-parser.add_argument('--resume', type=bool, help='1 to resume training', default=0)
+parser.add_argument('--resume', type=bool, help='1 to resume training', default=False)
 parser.add_argument('--train_dir', type=str, help='Train_dir',default = '../dataset2/train/')
 parser.add_argument('--test_dir', type=str, help='Train_dir', default = '../dataset2/test')
 parser.add_argument('--batch_size', type=int, help='batch_size', default = 32)
@@ -144,10 +144,11 @@ args = parser.parse_args()
 # test_dir = '../dataset2/test'
 # print(args.train_dir)
 # exit()
+print(args.resume)
 Network = Efficient(args.train_dir,args.test_dir,args.batch_size, args.epochs, args.model,args.lr)
-if args.resume == 0:
+if args.resume == False:
     Network.train_model()
-if args.resume == 1:
+if args.resume == True:
     Network.resume_training()
 
 #python.exe .\train.py ../dataset2/train/ ../dataset2/test 32 100 3
