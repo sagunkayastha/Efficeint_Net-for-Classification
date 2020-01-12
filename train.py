@@ -96,8 +96,8 @@ class Efficient:
         optimizer=Adam(lr=self.lr)
         lr_metric = get_lr_metric(optimizer)
 
-        self.model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy',lr_metric])
-        filepath="checkpoints/weights.hdf5"
+        
+        self.filepath="checkpoints/weights.hdf5"
 
         schedule = PolynomialDecay(maxEpochs=self.epochs, initAlpha=1e-1, power=5)
         tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
@@ -108,6 +108,20 @@ class Efficient:
 
     def train_model(self):
         self.efficient_model()
+        self.model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy',lr_metric])
+        history = self.model.fit_generator(
+            self.train_generator,
+            epochs = 100,
+            steps_per_epoch=len(self.train_generator),
+            validation_data=self.test_generator,
+            validation_steps=len(self.test_generator),
+            callbacks=self.callbacks_list
+    )
+    
+    def resume_training(self):
+        self.efficient_model()
+        self.model.load_weights(self.filepath)
+        self.model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy',lr_metric])
         history = self.model.fit_generator(
             self.train_generator,
             epochs = 100,
@@ -117,9 +131,8 @@ class Efficient:
             callbacks=self.callbacks_list
     )
 
-
-
 parser = argparse.ArgumentParser(description='Efficient')
+parser.add_argument('-resume', type=bool, help='1 to resume training', default=0)
 parser.add_argument('-train_dir', type=str, help='Train_dir',default = '../dataset2/train/')
 parser.add_argument('-test_dir', type=str, help='Train_dir', default = '../dataset2/test')
 parser.add_argument('-batch_size', type=int, help='batch_size', default = 32)
@@ -132,7 +145,10 @@ args = parser.parse_args()
 # print(args.train_dir)
 # exit()
 Network = Efficient(args.train_dir,args.test_dir,args.batch_size, args.epochs, args.model,args.lr)
-Network.train_model()
+if args.resume == 0:
+    Network.train_model()
+if args.resume == 1:
+    Network.resume_training()
 
 #python.exe .\train.py ../dataset2/train/ ../dataset2/test 32 100 3
 #tensorboard --logdir=logs/ -port 5252
