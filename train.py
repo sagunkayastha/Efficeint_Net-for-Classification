@@ -18,7 +18,6 @@ from keras.callbacks import TensorBoard
 import argparse
 
 class Efficient:
-
     def __init__(self,train_dir,test_dir,batch_size,epochs=100,effN='3',lr=0.01):
         self.batch_size = batch_size
         self.epochs = epochs    
@@ -29,8 +28,10 @@ class Efficient:
             horizontal_flip=True)
         self.effN=effN
         self.lr = lr
-        self.test_datagen = ImageDataGenerator(rescale=1./255)
+        self.optimizer=Adam(lr=self.lr)
 
+        self.test_datagen = ImageDataGenerator(rescale=1./255)
+        
         self.train_generator = self.train_datagen.flow_from_directory(
             train_dir,
             target_size=(32,32),
@@ -42,8 +43,6 @@ class Efficient:
             target_size=(32, 32),
             batch_size=self.batch_size,
             class_mode='categorical')
-
-        
 
         if self.effN=='3':
             self.efficient_net = EfficientNetB3(
@@ -57,7 +56,6 @@ class Efficient:
         elif self.effN=='2':
             from efficientnet import EfficientNetB2
             self.efficient_net = EfficientNetB2(
-                
                 input_shape=(32,32,3),
                 include_top=False,
                 pooling='max'
@@ -67,7 +65,6 @@ class Efficient:
         elif self.effN =='4':
             from efficientnet import EfficientNetB4
             self.efficient_net = EfficientNetB4(
-                
                 input_shape=(32,32,3),
                 include_top=False,
                 pooling='max'
@@ -93,22 +90,22 @@ class Efficient:
         self.model.add(Dense(units = 23, activation='sigmoid'))
         self.model.summary()	
 
-        self.optimizer=Adam(lr=self.lr)
-        self.lr_metric = get_lr_metric(self.optimizer)
+        
+        # self.lr_metric = get_lr_metric(self.optimizer)
 
         
         self.filepath="checkpoints/weights.hdf5"
 
-        schedule = PolynomialDecay(maxEpochs=self.epochs, initAlpha=1e-1, power=5)
-        tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
+        # schedule = PolynomialDecay(maxEpochs=self.epochs, initAlpha=1e-1, power=5)
+        #tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 
         checkpoint = ModelCheckpoint(self.filepath, monitor='accuracy', verbose=1, save_best_only=True, mode='max')
-        self.callbacks_list = [checkpoint,tensorboard]
+        self.callbacks_list = [checkpoint]
 #        self.callbacks_list = [checkpoint,LearningRateScheduler(schedule),tensorboard]
 
     def train_model(self):
         self.efficient_model()
-        self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy',self.lr_metric])
+        self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
         history = self.model.fit_generator(
             self.train_generator,
             epochs = 100,
@@ -121,7 +118,7 @@ class Efficient:
     def resume_training(self):
         self.efficient_model()
         self.model.load_weights(self.filepath)
-        self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy',self.lr_metric])
+        self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
         history = self.model.fit_generator(
             self.train_generator,
             epochs = 100,
