@@ -215,9 +215,9 @@ if args.t == 'Train':
     print(args.resume)
     Network = Efficient( args.model)
     if args.resume == False:
-        Network.train_model(args.train_dir,args.test_dir,args.batch_size, args.epochs, args.model,args.lr)
+        Network.train_model(args.train_dir,args.test_dir,args.batch_size, args.epochs,args.lr)
     if args.resume == True:
-        Network.resume_training(args.train_dir,args.test_dir,args.batch_size, args.epochs, args.model,args.lr)
+        Network.resume_training(args.train_dir,args.test_dir,args.batch_size, args.epochs,args.lr)
 elif args.t == 'Test':
     print(args.t)
     
