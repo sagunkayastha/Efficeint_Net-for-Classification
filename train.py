@@ -198,6 +198,7 @@ class Efficient:
 
 parser = argparse.ArgumentParser(description='Efficient')
 parser.add_argument('-t', type=str, default='Train')
+parser.add_argument('--predict', type=str, default="030.jpg")
 parser.add_argument('--resume', type=bool, help='1 to resume training', default=False)
 parser.add_argument('--train_dir', type=str, help='Train_dir',default = '../dataset2/train/')
 parser.add_argument('--test_dir', type=str, help='Train_dir', default = '../dataset2/test')
@@ -220,7 +221,7 @@ if args.t == 'Train':
 elif args.t == 'Test':
     print(args.t)
     
-    img= cv2.imread('030.jpg')
+    img= cv2.imread(args.predict)
     img_to_send = []
     img_to_send.append(img)
     Network = Efficient()
