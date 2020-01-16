@@ -101,7 +101,7 @@ class Efficient:
         
         self.train_variables(train_dir,test_dir,batch_size)
         self.efficient_model()
-	self.model.load_weights(self.filepath)
+	    self.model.load_weights(self.filepath)
         self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
         history = self.model.fit_generator(
             self.train_generator,
