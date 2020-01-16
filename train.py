@@ -19,8 +19,10 @@ from keras.callbacks import TensorBoard
 import argparse
 
 class Efficient:
-    def __init__(self,effN='3'):
+    def __init__(self,effN='3',epochs=100,lr=0.001):
         self.effN=effN
+        self.lr=lr
+        self.epochs=epochs
         self.filepath="checkpoints/"+'Model_'+self.effN +".hdf5"
         if self.effN=='3':
             self.efficient_net = EfficientNetB3(
@@ -81,21 +83,21 @@ class Efficient:
 
 #        self.callbacks_list = [checkpoint,LearningRateScheduler(schedule),tensorboard]
 
-    def train_model(self,train_dir,test_dir,batch_size,epochs=100,lr=0.01):
+    def train_model(self,train_dir,test_dir,batch_size):
         self.train_variables(train_dir,test_dir,batch_size)
         
-
+        self.efficient_model()
         self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
         history = self.model.fit_generator(
             self.train_generator,
-            epochs = 100,
+            epochs = self.epochs,
             steps_per_epoch=len(self.train_generator),
             validation_data=self.test_generator,
             validation_steps=len(self.test_generator),
             callbacks=self.callbacks_list
     )
     
-    def resume_training(self,train_dir,test_dir,batch_size,epochs=100,lr=0.01):
+    def resume_training(self,train_dir,test_dir,batch_size):
         print('--------------Resuming Training------------')
         
         
@@ -105,16 +107,16 @@ class Efficient:
         self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
         history = self.model.fit_generator(
             self.train_generator,
-            epochs = 100,
+            epochs = self.epochs,
             steps_per_epoch=len(self.train_generator),
             validation_data=self.test_generator,
             validation_steps=len(self.test_generator),
             callbacks=self.callbacks_list
     )
-    def train_variables(self,train_dir,test_dir,batch_size,epochs=100,lr=0.01):
+    def train_variables(self,train_dir,test_dir,batch_size):
         self.batch_size = batch_size
         
-        self.epochs = epochs    
+        
         self.train_datagen = ImageDataGenerator(
             rescale=1./255,
             shear_range=0.2,
@@ -134,7 +136,6 @@ class Efficient:
             batch_size=self.batch_size,
             class_mode='categorical')
 
-        self.lr = lr
         self.optimizer=Adam(lr=self.lr)
         tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 
@@ -223,11 +224,11 @@ args = parser.parse_args()
 # exit()
 if args.t == 'Train':
     print(args.resume)
-    Network = Efficient( args.model)
+    Network = Efficient( args.model,args.epochs,args.lr)
     if args.resume == False:
-        Network.train_model(args.train_dir,args.test_dir,args.batch_size, args.epochs,args.lr)
+        Network.train_model(args.train_dir,args.test_dir,args.batch_size)
     if args.resume == True:
-        Network.resume_training(args.train_dir,args.test_dir,args.batch_size, args.epochs,args.lr)
+        Network.resume_training(args.train_dir,args.test_dir,args.batch_size)
 elif args.t == 'Test':
     print(args.t)
     
