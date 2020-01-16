@@ -109,7 +109,7 @@ class Efficient:
             class_mode='categorical')
 
         self.efficient_model()
-        self.filepath="checkpoints_"+'Model_'+self.effN +".hdf5"
+        self.filepath="checkpoints/"+'Model_'+self.effN +".hdf5"
         tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 
         checkpoint = ModelCheckpoint(self.filepath, monitor='val_acc', verbose=1, save_best_only=False, mode='max')
