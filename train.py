@@ -21,7 +21,7 @@ import argparse
 class Efficient:
     def __init__(self,effN='3'):
         self.effN=effN
-        
+        self.filepath="checkpoints/"+'Model_'+self.effN +".hdf5"
         if self.effN=='3':
             self.efficient_net = EfficientNetB3(
                 
@@ -109,7 +109,7 @@ class Efficient:
             class_mode='categorical')
 
         self.efficient_model()
-        self.filepath="checkpoints/"+'Model_'+self.effN +".hdf5"
+        
         tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 
         checkpoint = ModelCheckpoint(self.filepath, monitor='val_acc', verbose=1, save_best_only=False, mode='max')
@@ -126,7 +126,7 @@ class Efficient:
     )
     
     def resume_training(self,train_dir,test_dir,batch_size,epochs=100,lr=0.01):
-        print('Resuming Training')
+        print('--------------Resuming Training------------')
         self.efficient_model()
         self.model.load_weights(self.filepath)
         self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
