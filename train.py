@@ -82,6 +82,35 @@ class Efficient:
 #        self.callbacks_list = [checkpoint,LearningRateScheduler(schedule),tensorboard]
 
     def train_model(self,train_dir,test_dir,batch_size,epochs=100,lr=0.01):
+        train_variables(train_dir,test_dir,batch_size)
+        
+
+        self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+        history = self.model.fit_generator(
+            self.train_generator,
+            epochs = 100,
+            steps_per_epoch=len(self.train_generator),
+            validation_data=self.test_generator,
+            validation_steps=len(self.test_generator),
+            callbacks=self.callbacks_list
+    )
+    
+    def resume_training(self,train_dir,test_dir,batch_size,epochs=100,lr=0.01):
+        print('--------------Resuming Training------------')
+        
+        self.efficient_model()
+        train_variables(train_dir,test_dir,batch_size)
+        self.model.load_weights(self.filepath)
+        self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+        history = self.model.fit_generator(
+            self.train_generator,
+            epochs = 100,
+            steps_per_epoch=len(self.train_generator),
+            validation_data=self.test_generator,
+            validation_steps=len(self.test_generator),
+            callbacks=self.callbacks_list
+    )
+    def train_variables(self,train_dir,test_dir,batch_size,epochs=100,lr=0.01):
         self.batch_size = batch_size
         
         self.epochs = epochs    
@@ -90,10 +119,6 @@ class Efficient:
             shear_range=0.2,
             zoom_range=0.2,
             horizontal_flip=True)
-        
-        self.lr = lr
-        self.optimizer=Adam(lr=self.lr)
-
         self.test_datagen = ImageDataGenerator(rescale=1./255)
         
         self.train_generator = self.train_datagen.flow_from_directory(
@@ -108,36 +133,17 @@ class Efficient:
             batch_size=self.batch_size,
             class_mode='categorical')
 
-        self.efficient_model()
-        
+        self.lr = lr
+        self.optimizer=Adam(lr=self.lr)
         tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 
         checkpoint = ModelCheckpoint(self.filepath, monitor='val_acc', verbose=1, save_best_only=False, mode='max')
         self.callbacks_list = [checkpoint,tensorboard]
 
-        self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
-        history = self.model.fit_generator(
-            self.train_generator,
-            epochs = 100,
-            steps_per_epoch=len(self.train_generator),
-            validation_data=self.test_generator,
-            validation_steps=len(self.test_generator),
-            callbacks=self.callbacks_list
-    )
-    
-    def resume_training(self,train_dir,test_dir,batch_size,epochs=100,lr=0.01):
-        print('--------------Resuming Training------------')
-        self.efficient_model()
-        self.model.load_weights(self.filepath)
-        self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
-        history = self.model.fit_generator(
-            self.train_generator,
-            epochs = 100,
-            steps_per_epoch=len(self.train_generator),
-            validation_data=self.test_generator,
-            validation_steps=len(self.test_generator),
-            callbacks=self.callbacks_list
-    )
+        
+
+        
+
 
     def predict_model(self,image,eff='3'):
         self.efficient_model()
