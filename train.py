@@ -82,7 +82,7 @@ class Efficient:
 #        self.callbacks_list = [checkpoint,LearningRateScheduler(schedule),tensorboard]
 
     def train_model(self,train_dir,test_dir,batch_size,epochs=100,lr=0.01):
-        train_variables(train_dir,test_dir,batch_size)
+        self.train_variables(train_dir,test_dir,batch_size)
         
 
         self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
@@ -98,9 +98,10 @@ class Efficient:
     def resume_training(self,train_dir,test_dir,batch_size,epochs=100,lr=0.01):
         print('--------------Resuming Training------------')
         
+        
+        self.train_variables(train_dir,test_dir,batch_size)
         self.efficient_model()
-        train_variables(train_dir,test_dir,batch_size)
-        self.model.load_weights(self.filepath)
+	self.model.load_weights(self.filepath)
         self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
         history = self.model.fit_generator(
             self.train_generator,
