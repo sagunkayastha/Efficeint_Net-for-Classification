@@ -126,6 +126,7 @@ class Efficient:
     )
     
     def resume_training(self,train_dir,test_dir,batch_size,epochs=100,lr=0.01):
+        print('Resuming Training')
         self.efficient_model()
         self.model.load_weights(self.filepath)
         self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
