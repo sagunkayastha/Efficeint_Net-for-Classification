@@ -1,3 +1,4 @@
 datasets2/*
 logs/*
 checkpoints/*
+*hdf5

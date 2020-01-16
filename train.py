@@ -110,7 +110,7 @@ class Efficient:
 
         self.efficient_model()
         self.filepath="checkpoints/saved.hdf5"
-        checkpoint = ModelCheckpoint(self.filepath, monitor='accuracy', verbose=1, save_best_only=True, mode='max')
+        checkpoint = ModelCheckpoint(self.filepath, monitor='val_acc', verbose=1, save_best_only=False, mode='max')
         self.callbacks_list = [checkpoint]
 
         self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
