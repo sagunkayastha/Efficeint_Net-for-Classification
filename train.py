@@ -60,6 +60,16 @@ class Efficient:
                 pooling='max'
             )
             print('Using Model EfficientNetB5')
+
+        elif self.effN=='1':
+            from efficientnet import EfficientNetB1
+            self.efficient_net = EfficientNetB1(
+                
+                input_shape=(32,32,3),
+                include_top=False,
+                pooling='max'
+            )
+            print('Using Model EfficientNetB5')
         
 
     def efficient_model(self):
@@ -67,8 +77,8 @@ class Efficient:
 
         self.model = Sequential()
         self.model.add(self.efficient_net)
-        self.model.add(Dense(units = 120, activation='relu'))
-        self.model.add(Dense(units = 120, activation = 'relu'))
+        self.model.add(Dense(units = 128, activation='relu'))
+        # self.model.add(Dense(units = 64, activation = 'relu'))
         self.model.add(Dense(units = 23, activation='sigmoid'))
         self.model.summary()	
 
