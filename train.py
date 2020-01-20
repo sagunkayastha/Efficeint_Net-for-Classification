@@ -121,6 +121,8 @@ class Efficient:
             steps_per_epoch=len(self.train_generator),
             validation_data=self.test_generator,
             validation_steps=len(self.test_generator),
+            use_multiprocessing=True,
+            workers=4,
             callbacks=self.callbacks_list
     )
     def train_variables(self,train_dir,test_dir,batch_size):
