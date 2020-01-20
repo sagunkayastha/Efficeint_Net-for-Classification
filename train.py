@@ -79,7 +79,7 @@ class Efficient:
         self.model.add(self.efficient_net)
         self.model.add(Dense(units = 128, activation='relu'))
         # self.model.add(Dense(units = 64, activation = 'relu'))
-        self.model.add(Dense(units = 23, activation='sigmoid'))
+        self.model.add(Dense(units = 31, activation='sigmoid'))
         self.model.summary()	
 
         
@@ -89,7 +89,7 @@ class Efficient:
         
 
         # schedule = PolynomialDecay(maxEpochs=self.epochs, initAlpha=1e-1, power=5)
-        tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
+        # tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 
 #        self.callbacks_list = [checkpoint,LearningRateScheduler(schedule),tensorboard]
 
