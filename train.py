@@ -151,7 +151,7 @@ class Efficient:
         self.optimizer=Adam(lr=self.lr)
         tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 
-        checkpoint = ModelCheckpoint(self.filepath, monitor='val_acc', verbose=1, save_best_only=False, mode='max')
+        checkpoint = ModelCheckpoint(self.filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         self.callbacks_list = [checkpoint,tensorboard]
 
         
